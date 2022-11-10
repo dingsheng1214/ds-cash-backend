@@ -1,0 +1,26 @@
+MONGODB_CONFIG:
+  name: "nest-demo-mongo"          # 自定义次数据库链接名称
+  type: mongodb                      # 数据库链接类型
+  url: "mongodb://localhost:27017"   # 数据库链接地址
+  username: "root"                   # 数据库链接用户名
+  password: "root"                 # 数据库链接密码
+  database: "nest-demo"      # 数据库名
+  entities: "mongo"                  # 自定义加载类型
+  logging: false                     # 数据库打印日志
+
+PG_CONFIG:
+  name: "nest-demo-pg"
+  type: "postgres"
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "postgres"
+  database: "postgres"
+  entities: "pg" # 这里的命名一定要跟 MongoDB 里面的配置命名区分开
+  synchronize: true
+
+REDIS_CONFIG:
+  host: "localhost"  # redis 链接
+  port: 6379         # redis 端口
+  auth: "123456"       # redis 连接密码
+  db: 1              # redis 数据库
