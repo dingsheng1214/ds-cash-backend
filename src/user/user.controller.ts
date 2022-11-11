@@ -20,7 +20,7 @@ export class UserController {
   @Inject()
   private readonly configService: ConfigService;
 
-  @Post()
+  @Post('/register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }

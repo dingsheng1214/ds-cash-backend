@@ -1,3 +1,4 @@
+import { BusinessException } from './../common/exceptions/business.exceptions';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
@@ -16,6 +17,12 @@ export class UserService {
   private cacheManager: Cache;
 
   async create(createUserDto: CreateUserDto) {
+    const existedUser = await this.userRepository.findOne({
+      where: { username: createUserDto.username },
+    });
+    if (existedUser) {
+      throw new BusinessException('用户名已存在');
+    }
     return this.userRepository.save(createUserDto);
   }
 

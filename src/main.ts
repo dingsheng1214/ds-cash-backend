@@ -1,10 +1,10 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import { BaseExceptionFilter } from './common/exceptions/filters/base.exception.filter';
 import { HttpExceptionFilter } from './common/exceptions/filters/http.exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
@@ -23,7 +23,10 @@ async function bootstrap() {
   // 拦截器-封装统一返回
   app.useGlobalInterceptors(new TransformInterceptor());
   // 过滤器-异常处理
-  app.useGlobalFilters(new BaseExceptionFilter(), new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.useGlobalPipes(new ValidationPipe());
+
   // HRM 热更新
   if (module.hot) {
     module.hot.accept();
