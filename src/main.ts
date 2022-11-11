@@ -1,3 +1,4 @@
+import { BaseExceptionFilter } from './common/exceptions/filters/base.exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
@@ -23,7 +24,7 @@ async function bootstrap() {
   // 拦截器-封装统一返回
   app.useGlobalInterceptors(new TransformInterceptor());
   // 过滤器-异常处理
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new BaseExceptionFilter(), new HttpExceptionFilter());
 
   app.useGlobalPipes(new ValidationPipe());
 
