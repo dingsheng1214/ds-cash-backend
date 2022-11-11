@@ -7,6 +7,7 @@ import { MongoRepository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { makeSalt, encrypt } from 'src/common/utils/crypto';
 
 @Injectable()
 export class UserService {
@@ -17,13 +18,19 @@ export class UserService {
   private cacheManager: Cache;
 
   async create(createUserDto: CreateUserDto) {
-    const existedUser = await this.userRepository.findOne({
-      where: { username: createUserDto.username },
+    const { username, password } = createUserDto;
+    const isExisted = await this.userRepository.findOne({
+      where: { username },
     });
-    if (existedUser) {
+    if (isExisted) {
       throw new BusinessException('用户名已存在');
     }
-    return this.userRepository.save(createUserDto);
+
+    const user = new User();
+    user.username = username;
+    user.salt = makeSalt();
+    user.password = encrypt(password, user.salt);
+    return this.userRepository.save(user);
   }
 
   async findAll() {

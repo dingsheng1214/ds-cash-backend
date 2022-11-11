@@ -9,20 +9,25 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id?: number;
+  id: number;
 
-  @Column({ default: null })
+  @Column('text')
   username: string;
 
-  @Column({ default: null })
+  // 加密后
+  @Column('text', { select: false })
   password: string;
 
-  // 个性签名
-  @Column({ default: null })
-  signature?: string;
+  // 盐
+  @Column('text', { select: false })
+  salt: string;
 
-  @Column({ default: null })
-  avatar?: string;
+  // 个性签名
+  @Column('text', { default: null })
+  signature: string;
+
+  @Column('text', { default: null })
+  avatar: string;
 
   @CreateDateColumn()
   created_time: Date;
