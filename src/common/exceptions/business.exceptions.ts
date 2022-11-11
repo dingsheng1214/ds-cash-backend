@@ -12,7 +12,7 @@ export class BusinessException extends HttpException {
     if (typeof err === 'string') {
       err = {
         code: BUSINESS_ERROR_CODE.COMMON,
-        message: err
+        message: err,
       };
     }
     super(err, HttpStatus.OK);
@@ -21,7 +21,7 @@ export class BusinessException extends HttpException {
   static throwForbidden() {
     throw new BusinessException({
       code: BUSINESS_ERROR_CODE.ACCESS_FORBIDDEN,
-      message: '抱歉哦，您无此权限！'
+      message: '抱歉哦，您无此权限！',
     });
   }
 }

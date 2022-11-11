@@ -18,7 +18,7 @@ export class RedisModule {
       port: REDIS_CONFIG.port,
       ttl: 0,
       // auth_pass: REDIS_CONFIG.auth,
-      db: REDIS_CONFIG.db
+      db: REDIS_CONFIG.db,
     });
   }
 }

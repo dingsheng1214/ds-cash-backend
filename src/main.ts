@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
-  NestFastifyApplication
+  NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { BaseExceptionFilter } from './common/exceptions/filters/base.exception.filter';
@@ -15,7 +15,7 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    new FastifyAdapter(),
   );
 
   // 中间件-日志

@@ -3,7 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpStatus
+  HttpStatus,
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { Logger } from 'src/common/utils/log4j';
@@ -31,7 +31,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         status: error['code'],
         extra: {},
         message: error['message'],
-        success: false
+        success: false,
       });
       return;
     }
@@ -40,7 +40,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: exception.getResponse()
+      message: exception.getResponse(),
     });
   }
 }

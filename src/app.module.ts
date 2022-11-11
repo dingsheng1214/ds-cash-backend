@@ -12,11 +12,11 @@ import { getConfig } from 'src/common/utils/yaml';
     ConfigModule.forRoot({
       ignoreEnvFile: true, // 忽略 .env 文件
       isGlobal: true,
-      load: [getConfig]
+      load: [getConfig],
     }),
     RedisModule.register(),
-    UserModule
+    UserModule,
   ],
-  providers: []
+  providers: [],
 })
 export class AppModule {}

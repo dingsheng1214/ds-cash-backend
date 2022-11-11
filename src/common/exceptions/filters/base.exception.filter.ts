@@ -3,7 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpStatus,
-  ServiceUnavailableException
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { Logger } from 'src/common/utils/log4j';
@@ -22,7 +22,7 @@ export class BaseExceptionFilter<T> implements ExceptionFilter {
       status: HttpStatus.SERVICE_UNAVAILABLE,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: new ServiceUnavailableException().getResponse()
+      message: new ServiceUnavailableException().getResponse(),
     });
   }
 }

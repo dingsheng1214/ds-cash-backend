@@ -16,7 +16,7 @@ export enum LoggerLevel {
   WARN = 'WARN',
   ERROR = 'ERROR',
   FATAL = 'FATAL',
-  OFF = 'OFF'
+  OFF = 'OFF',
 }
 
 // 内容跟踪类
@@ -25,7 +25,7 @@ export class ContextTrace {
     public readonly context: string,
     public readonly path?: string,
     public readonly lineNumber?: number,
-    public readonly columnNumber?: number
+    public readonly columnNumber?: number,
   ) {}
 }
 
@@ -58,7 +58,7 @@ Log4js.addLayout('Nest', (logConfig: any) => {
     const positionOutput: string = position ? ` [${position}]` : '';
     const typeOutput = `[${logConfig.type}] ${logEvent.pid.toString()}  - `;
     const dateOutput = `${dayjs(logEvent.startTime).format(
-      'YYYY/MM/DD HH:mm:ss'
+      'YYYY/MM/DD HH:mm:ss',
     )}`;
     const moduleOutput: string = moduleName
       ? `[${moduleName}] `
@@ -88,7 +88,7 @@ Log4js.addLayout('Nest', (logConfig: any) => {
     }
 
     return `${Chalk.green(typeOutput)}${dateOutput}  ${Chalk.yellow(
-      moduleOutput
+      moduleOutput,
     )}${levelOutput}${positionOutput}`;
   };
 });

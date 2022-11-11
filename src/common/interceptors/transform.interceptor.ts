@@ -2,7 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor
+  NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -18,7 +18,7 @@ export class TransformInterceptor<T>
 {
   intercept(
     context: ExecutionContext,
-    next: CallHandler
+    next: CallHandler,
   ): Observable<Response<T>> {
     const req = context.switchToHttp().getRequest<Request>();
     Logger.info(`请求参数：${JSON.stringify(req.body)}`);
@@ -28,8 +28,8 @@ export class TransformInterceptor<T>
         status: 0,
         extra: {},
         message: 'success',
-        success: true
-      }))
+        success: true,
+      })),
     );
   }
 }

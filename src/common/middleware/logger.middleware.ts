@@ -4,7 +4,7 @@ import { Logger } from '../utils/log4j';
 export function LoggerMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const code = res.statusCode; // 响应状态码
   // 组装日志信息
