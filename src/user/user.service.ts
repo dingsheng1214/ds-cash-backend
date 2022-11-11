@@ -1,3 +1,4 @@
+import { LoginDTO } from './dto/login.dto';
 import { BusinessException } from './../common/exceptions/business.exceptions';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +9,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { makeSalt, encrypt } from 'src/common/utils/crypto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
@@ -16,6 +18,9 @@ export class UserService {
 
   @Inject(CACHE_MANAGER)
   private cacheManager: Cache;
+
+  @Inject()
+  private readonly jwtService: JwtService;
 
   async create(createUserDto: CreateUserDto) {
     const { username, password } = createUserDto;
@@ -52,5 +57,24 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async login(loginDTO: LoginDTO) {
+    const { password, username } = loginDTO;
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.salt')
+      .addSelect('user.password')
+      .where('user.username = :username', { username })
+      .getOne();
+    if (!user) throw new BusinessException('用户不存在');
+    const { password: encryptedPassword, salt } = user;
+    if (encrypt(password, salt) !== encryptedPassword)
+      throw new BusinessException('密码错误');
+    const token = await this.jwtService.sign({
+      id: user.id,
+      username: user.username,
+    });
+    return token;
   }
 }

@@ -1,3 +1,4 @@
+import { LoginDTO } from './dto/login.dto';
 import {
   Body,
   Controller,
@@ -20,7 +21,7 @@ export class UserController {
   @Inject()
   private readonly configService: ConfigService;
 
-  @Post('/register')
+  @Post('register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -43,5 +44,10 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Post('login')
+  login(@Body() loginDTO: LoginDTO) {
+    return this.userService.login(loginDTO);
   }
 }
