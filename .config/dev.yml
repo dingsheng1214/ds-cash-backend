@@ -24,3 +24,7 @@ REDIS_CONFIG:
   port: 6379         # redis 端口
   auth: "123456"       # redis 连接密码
   db: 1              # redis 数据库
+
+APP_CONFIG:
+  jwt_secret: 'secretKey' # jwt 秘钥
+  jwt_expire: '8h' # jwt 时效时间

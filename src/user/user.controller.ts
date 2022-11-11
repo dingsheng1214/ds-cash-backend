@@ -1,4 +1,4 @@
-import { LoginDTO } from './dto/login.dto';
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import {
   Body,
   Controller,
@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -33,7 +34,7 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne({ where: { id } });
   }
 
   @Patch(':id')
@@ -41,13 +42,9 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
-
-  @Post('login')
-  login(@Body() loginDTO: LoginDTO) {
-    return this.userService.login(loginDTO);
+    return this.userService.remove(id);
   }
 }

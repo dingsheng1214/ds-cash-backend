@@ -1,6 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as path from 'path';
 import { User } from 'src/user/entities/user.entity';
 import { Logger } from '../utils/log4j';
 import { getConfig } from '../utils/yaml';
