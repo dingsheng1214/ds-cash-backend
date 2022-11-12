@@ -26,23 +26,18 @@ export class BillController {
     return this.billService.list(listBillDto);
   }
 
-  @Get()
-  findAll() {
-    return this.billService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.billService.findOne(+id);
+    return this.billService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBillDto: UpdateBillDto) {
-    return this.billService.update(+id, updateBillDto);
+  @Post('update')
+  update(@Body() updateBillDto: UpdateBillDto) {
+    return this.billService.update(updateBillDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.billService.remove(+id);
+    return this.billService.remove(id);
   }
 }

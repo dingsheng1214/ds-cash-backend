@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 export class CreateBillDto {
-  @IsNotEmpty()
   @ApiProperty({
     description: '账单类型 1: 支出 2: 收入',
     example: 1,

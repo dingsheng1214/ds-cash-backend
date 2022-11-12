@@ -1,3 +1,4 @@
+import { BusinessException } from './../common/exceptions/business.exceptions';
 import { ListBillDto } from './dto/list-bill.dto';
 import { Bill } from './entities/bill.entity';
 import { Injectable } from '@nestjs/common';
@@ -96,15 +97,21 @@ export class BillService {
     return `This action returns all bill`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bill`;
+  async findOne(id: string) {
+    if (!id) throw new BusinessException('账单id不能为空');
+    try {
+      const result = await this.billRepositity.findOneBy({ id });
+      return result;
+    } catch (err) {
+      throw new BusinessException('系统错误');
+    }
   }
 
-  update(id: number, updateBillDto: UpdateBillDto) {
-    return `This action updates a #${id} bill`;
+  update(updateBillDto: UpdateBillDto) {
+    this.billRepositity.update({ id: updateBillDto.id }, updateBillDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bill`;
+  remove(id: string) {
+    this.billRepositity.delete({ id });
   }
 }
