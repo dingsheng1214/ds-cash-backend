@@ -1,5 +1,5 @@
 import { BusinessException } from './../common/exceptions/business.exceptions';
-import { JWT_PAYLOAD } from './../../types/global.d';
+import { JWT_PAYLOAD } from '../../types/global';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import {
   Body,
@@ -37,7 +37,7 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
   @UseGuards(JwtAuthGuard)

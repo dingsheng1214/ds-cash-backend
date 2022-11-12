@@ -1,7 +1,7 @@
 import { BusinessException } from './../common/exceptions/business.exceptions';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, MongoRepository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,7 +10,7 @@ import { makeSalt, encrypt } from 'src/common/utils/crypto';
 @Injectable()
 export class UserService {
   @InjectRepository(User)
-  private readonly userRepository: MongoRepository<User>;
+  private readonly userRepository: Repository<User>;
 
   async create(createUserDto: CreateUserDto) {
     const { username, password } = createUserDto;

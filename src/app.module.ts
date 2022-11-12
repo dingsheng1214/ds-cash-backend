@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { getConfig } from 'src/common/utils/yaml';
 import { AuthModule } from './auth/auth.module';
+import { BillModule } from './bill/bill.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     RedisModule.register(),
     UserModule,
     AuthModule,
+    BillModule,
   ],
   providers: [],
 })
