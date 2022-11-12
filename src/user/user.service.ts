@@ -1,25 +1,16 @@
 import { BusinessException } from './../common/exceptions/business.exceptions';
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cache } from 'cache-manager';
-import { Logger } from 'src/common/utils/log4j';
 import { FindOneOptions, MongoRepository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { makeSalt, encrypt } from 'src/common/utils/crypto';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly userRepository: MongoRepository<User>;
-
-  @Inject(CACHE_MANAGER)
-  private cacheManager: Cache;
-
-  @Inject()
-  private readonly jwtService: JwtService;
 
   async create(createUserDto: CreateUserDto) {
     const { username, password } = createUserDto;
@@ -38,18 +29,11 @@ export class UserService {
     return { id: dbUser.id, username: dbUser.username };
   }
 
-  async findAll() {
-    await this.cacheManager.set('name', 'ding', { ttl: 0 });
-    const res = await this.cacheManager.get('name');
-    Logger.info(res);
-    return `This action returns all user`;
-  }
-
   findOne(findOptions: FindOneOptions<User>) {
     return this.userRepository.findOne(findOptions);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateUserDto) {
     console.log(updateUserDto);
 
     return `This action updates a #${id} user`;

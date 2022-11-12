@@ -1,3 +1,5 @@
+import { BusinessException } from './../common/exceptions/business.exceptions';
+import { JWT_PAYLOAD } from './../../types/global.d';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import {
   Body,
@@ -9,6 +11,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,11 +30,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne({ where: { id } });
@@ -44,7 +42,11 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Request() req, @Param('id') id: string) {
+    const jwt_payload: JWT_PAYLOAD = req.user;
+    if (jwt_payload.id !== id) {
+      throw new BusinessException('不能删除其它用户信息');
+    }
     return this.userService.remove(id);
   }
 }
