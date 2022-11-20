@@ -7,15 +7,16 @@ import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class BillService {
   @InjectRepository(Bill)
   private billRepositity: Repository<Bill>;
 
-  async create(createBillDto: CreateBillDto) {
-    const { amount, type, tag_id, tag_name, remark, date, user_id } =
-      createBillDto;
+  async create(user: User, createBillDto: CreateBillDto) {
+    const user_id = user.id;
+    const { amount, type, tag_id, tag_name, remark, date } = createBillDto;
 
     const bill = new Bill();
     bill.amount = amount;
@@ -29,13 +30,10 @@ export class BillService {
     return result;
   }
 
-  async list({
-    user_id,
-    date,
-    tag_id,
-    type,
-    pageInfo: { page, page_size },
-  }: ListBillDto) {
+  async list(
+    { id: user_id }: User,
+    { date, tag_id, type, pageInfo: { page, page_size } }: ListBillDto,
+  ) {
     // 1 获取用户所有账单
     const queryBuilder = this.billRepositity
       .createQueryBuilder('bill')
@@ -83,8 +81,8 @@ export class BillService {
       .printSql();
     const total_arr: { type: 1 | 2; total: number }[] =
       await totalQueryBuilder.getRawMany();
-    const total_expense = total_arr.find((item) => item.type === 1).total;
-    const total_income = total_arr.find((item) => item.type === 2).total;
+    const total_expense = total_arr.find((item) => item.type === 1)?.total || 0;
+    const total_income = total_arr.find((item) => item.type === 2)?.total || 0;
     return {
       total_expense, // 当月支出
       total_income, // 当月收入

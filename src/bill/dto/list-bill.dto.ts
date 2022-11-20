@@ -15,13 +15,6 @@ export class ListBillDto {
   readonly tag_id?: string;
 
   @ApiProperty({
-    description: '用户ID',
-    example: '123456',
-  })
-  @IsNotEmpty({ message: '请选择所属用户' })
-  readonly user_id: string;
-
-  @ApiProperty({
     description: '账单日期',
     example: '2022-11',
   })

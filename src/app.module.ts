@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { getConfig } from 'src/common/utils/yaml';
 import { AuthModule } from './auth/auth.module';
 import { BillModule } from './bill/bill.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BillModule } from './bill/bill.module';
     UserModule,
     AuthModule,
     BillModule,
+    TagModule,
   ],
   providers: [],
 })

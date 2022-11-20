@@ -1,6 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bill } from 'src/bill/entities/bill.entity';
+import { Tag } from 'src/tag/entities/tag.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Logger } from '../utils/log4j';
 import { getConfig } from '../utils/yaml';
@@ -35,7 +36,7 @@ export class DatabaseModule {
       ...DATABASE_CONFIG[type],
       // 只要是以 entity.ts 结尾的实例类，都会被自动扫描识别，并在数据库中生成对应的实体表, HRM热更新时无效, 需要手动引入
       // entities: [path.join(__dirname, `../../**/*.entity.{ts,js}`)],
-      entities: [User, Bill],
+      entities: [User, Bill, Tag],
       // ! MongoDB 是无模式的，所以即使在配置参数开启了 synchronize，启动项目的时候也不会去数据库创建对应的表，所以不用奇怪，并没有出错，
       // ! 但 Mysql 在每次应用程序启动时自动同步表结构，容易造成数据丢失，生产环境记得关闭，以免造成无可预计的损失
       synchronize: process.env.NODE_ENV === 'dev' ? true : false,

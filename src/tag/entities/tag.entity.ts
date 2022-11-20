@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Bill {
+export class Tag {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -15,24 +15,14 @@ export class Bill {
   @Column('smallint')
   type: 1 | 2;
 
-  // 金额
-  @Column('decimal')
-  amount: number;
-
   @Column('text')
-  tag_id: string;
-
-  @Column('text')
-  tag_name: string;
+  name: string;
 
   @Column('text')
   user_id: string;
 
   @Column('text', { default: null })
-  remark: string;
-
-  @Column('timestamp')
-  date: Date;
+  icon: string;
 
   @CreateDateColumn()
   created_time: Date;

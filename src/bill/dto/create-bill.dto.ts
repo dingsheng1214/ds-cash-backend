@@ -13,7 +13,7 @@ export class CreateBillDto {
     example: 123456,
   })
   @IsNotEmpty({ message: '请输入账单金额' })
-  readonly amount: bigint;
+  readonly amount: number;
 
   @ApiProperty({
     description: '标签ID',
@@ -28,13 +28,6 @@ export class CreateBillDto {
   })
   @IsNotEmpty({ message: '请选择标签' })
   readonly tag_name: string;
-
-  @ApiProperty({
-    description: '用户ID',
-    example: '123456',
-  })
-  @IsNotEmpty({ message: '请选择所属用户' })
-  readonly user_id: string;
 
   @ApiProperty({
     description: '账单日期',
