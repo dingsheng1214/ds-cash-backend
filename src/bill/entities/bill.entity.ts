@@ -19,13 +19,13 @@ export class Bill {
   @Column('decimal')
   amount: number;
 
-  @Column('text')
+  @Column('uuid')
   tag_id: string;
 
   @Column('text')
   tag_name: string;
 
-  @Column('text')
+  @Column('uuid')
   user_id: string;
 
   @Column('text', { default: null })

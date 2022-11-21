@@ -12,6 +12,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { ListBillDto } from './dto/list-bill.dto';
+import { MakeupDto } from './dto/makeup.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 
 @Controller('bill')
@@ -43,5 +44,11 @@ export class BillController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.billService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('makeup')
+  makeup(@Request() req, @Body() makeupDto: MakeupDto) {
+    return this.billService.makeup(req.user, makeupDto);
   }
 }

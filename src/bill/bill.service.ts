@@ -1,3 +1,5 @@
+import { Tag } from 'src/tag/entities/tag.entity';
+import { MakeupDto } from './dto/makeup.dto';
 import { BusinessException } from './../common/exceptions/business.exceptions';
 import { ListBillDto } from './dto/list-bill.dto';
 import { Bill } from './entities/bill.entity';
@@ -111,5 +113,32 @@ export class BillService {
 
   remove(id: string) {
     this.billRepositity.delete({ id });
+  }
+
+  makeup(user: User, makeupDto: MakeupDto) {
+    /**
+     * SELECT tag_id, tag_name, sum(amount) as total from bill WHERE user_id = '***' and to_char("date", 'YYYY-MM') = '2022-11' and type = 1 GROUP BY tag_id, tag_name order by total
+     */
+    const { id: user_id } = user;
+    const { date, type } = makeupDto;
+    const queryBuilder = this.billRepositity
+      .createQueryBuilder('bill')
+      .leftJoinAndSelect(Tag, 'tag', 'tag.id = bill.tag_id')
+      .select('bill.tag_id', 'tag_id')
+      .addSelect('bill.tag_name', 'tag_name')
+      .addSelect('tag.icon', 'tag_icon')
+      .addSelect('sum(bill.amount)', 'total')
+      .where('bill.user_id = :user_id', { user_id })
+      .andWhere('bill.type = :type', { type })
+      .andWhere("to_char(bill.date, 'yyyy-MM') = :date", {
+        date: date.toString(),
+      })
+      .groupBy('bill.tag_id')
+      .addGroupBy('bill.tag_name')
+      .addGroupBy('tag.icon')
+      .orderBy('total', 'DESC');
+    // 因为返回的不是实体类 Bill, 而是 raw results {tag_id, tag_name, total}, 因此要用getRawMany()
+    const result = queryBuilder.printSql().getRawMany();
+    return result;
   }
 }
