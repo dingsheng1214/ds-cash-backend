@@ -22,9 +22,6 @@ export class Bill {
   @Column('uuid')
   tag_id: string;
 
-  @Column('text')
-  tag_name: string;
-
   @Column('uuid')
   user_id: string;
 

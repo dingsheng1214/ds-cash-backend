@@ -18,13 +18,12 @@ export class BillService {
 
   async create(user: User, createBillDto: CreateBillDto) {
     const user_id = user.id;
-    const { amount, type, tag_id, tag_name, remark, date } = createBillDto;
+    const { amount, type, tag_id, remark, date } = createBillDto;
 
     const bill = new Bill();
     bill.amount = amount;
     bill.type = type;
     bill.tag_id = tag_id;
-    bill.tag_name = tag_name;
     bill.remark = remark;
     bill.date = date;
     bill.user_id = user_id;
@@ -39,6 +38,20 @@ export class BillService {
     // 1 获取用户所有账单
     const queryBuilder = this.billRepositity
       .createQueryBuilder('bill')
+      .leftJoinAndSelect(Tag, 'tag', 'tag.id = bill.tag_id')
+      .select([
+        'bill.id as id',
+        'bill.type as type',
+        'bill.amount as amount',
+        'bill.date as date',
+        'bill.tag_id as tag_id',
+        'bill.user_id as user_id',
+        'bill.remark as remark',
+        'bill.created_time as created_time',
+        'bill.updated_time as updated_time',
+      ])
+      .addSelect('tag.name', 'tag_name')
+      .addSelect('tag.icon', 'tag_icon')
       .where('bill.user_id = :user_id', { user_id })
       .andWhere("to_char(bill.date, 'yyyy-MM') = :date", {
         date: date.toString(),
@@ -46,7 +59,7 @@ export class BillService {
     if (tag_id) queryBuilder.andWhere('bill.tag_id = :tag_id', { tag_id });
     if (type) queryBuilder.andWhere('bill.type = :type', { type });
     queryBuilder.orderBy('bill.date', 'DESC');
-    const bills = await queryBuilder.printSql().getMany();
+    const bills = await queryBuilder.printSql().getRawMany();
 
     // 2 构造返回结果 { date: string, bills: Bill[]}[]
     const result = bills.reduce<{ date: string; bills: Bill[] }[]>(
@@ -123,9 +136,8 @@ export class BillService {
     const { date, type } = makeupDto;
     const queryBuilder = this.billRepositity
       .createQueryBuilder('bill')
-      .leftJoinAndSelect(Tag, 'tag', 'tag.id = bill.tag_id')
       .select('bill.tag_id', 'tag_id')
-      .addSelect('bill.tag_name', 'tag_name')
+      .addSelect('tag.name', 'tag_name')
       .addSelect('tag.icon', 'tag_icon')
       .addSelect('sum(bill.amount)', 'total')
       .where('bill.user_id = :user_id', { user_id })
@@ -134,9 +146,10 @@ export class BillService {
         date: date.toString(),
       })
       .groupBy('bill.tag_id')
-      .addGroupBy('bill.tag_name')
+      .addGroupBy('tag.name')
       .addGroupBy('tag.icon')
-      .orderBy('total', 'DESC');
+      .orderBy('total', 'DESC')
+      .leftJoin(Tag, 'tag', 'tag.id = bill.tag_id');
     // 因为返回的不是实体类 Bill, 而是 raw results {tag_id, tag_name, total}, 因此要用getRawMany()
     const result = queryBuilder.printSql().getRawMany();
     return result;
