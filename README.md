@@ -42,4 +42,13 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## PM2
+
+```bash
+# 查看进程
+pm2 list
+
+# 查看指定进程日志
+pm2 log <pm2.config.js中的name>
+```
 

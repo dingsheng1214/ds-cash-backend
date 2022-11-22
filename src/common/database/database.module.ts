@@ -39,7 +39,7 @@ export class DatabaseModule {
       entities: [User, Bill, Tag],
       // ! MongoDB 是无模式的，所以即使在配置参数开启了 synchronize，启动项目的时候也不会去数据库创建对应的表，所以不用奇怪，并没有出错，
       // ! 但 Mysql 在每次应用程序启动时自动同步表结构，容易造成数据丢失，生产环境记得关闭，以免造成无可预计的损失
-      // synchronize: process.env.NODE_ENV === 'dev' ? true : false,
+      synchronize: process.env.NODE_ENV === 'dev' ? true : false,
     };
     Logger.msg(`DatabaseConfig: ${JSON.stringify(config)}`);
     return config;
