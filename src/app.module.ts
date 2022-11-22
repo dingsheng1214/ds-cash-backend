@@ -17,7 +17,7 @@ import { TagModule } from './tag/tag.module';
       isGlobal: true,
       load: [getConfig],
     }),
-    RedisModule.register(),
+    // RedisModule.register(),
     UserModule,
     AuthModule,
     BillModule,
