@@ -1,3 +1,4 @@
+import { RankBillDto } from './dto/rank-bill.dto';
 import {
   Controller,
   Get,
@@ -31,6 +32,12 @@ export class BillController {
     return this.billService.list(req.user, listBillDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('rank')
+  rank(@Request() req, @Body() rankBillDto: RankBillDto) {
+    return this.billService.rank(req.user, rankBillDto);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.billService.findOne(id);
@@ -50,5 +57,11 @@ export class BillController {
   @Post('makeup')
   makeup(@Request() req, @Body() makeupDto: MakeupDto) {
     return this.billService.makeup(req.user, makeupDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('dailyCompare')
+  dailyCompare(@Request() req, @Body() makeupDto: MakeupDto) {
+    return this.billService.dailyCompare(req.user, makeupDto);
   }
 }

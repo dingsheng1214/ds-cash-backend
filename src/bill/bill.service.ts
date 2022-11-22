@@ -1,3 +1,4 @@
+import { RankBillDto } from './dto/rank-bill.dto';
 import { Tag } from 'src/tag/entities/tag.entity';
 import { MakeupDto } from './dto/makeup.dto';
 import { BusinessException } from './../common/exceptions/business.exceptions';
@@ -106,8 +107,61 @@ export class BillService {
     };
   }
 
-  findAll() {
-    return `This action returns all bill`;
+  async rank(
+    { id: user_id }: User,
+    { date, tag_id, type, orderBy, pageInfo: { page, page_size } }: RankBillDto,
+  ) {
+    // 分页账单
+    const queryBuilder = this.billRepositity
+      .createQueryBuilder('bill')
+      .leftJoinAndSelect(Tag, 'tag', 'tag.id = bill.tag_id')
+      .select([
+        'bill.id as id',
+        'bill.type as type',
+        'bill.amount as amount',
+        'bill.date as date',
+        'bill.tag_id as tag_id',
+        'bill.user_id as user_id',
+        'bill.remark as remark',
+        'bill.created_time as created_time',
+        'bill.updated_time as updated_time',
+      ])
+      .addSelect('tag.name', 'tag_name')
+      .addSelect('tag.icon', 'tag_icon')
+      .where('bill.user_id = :user_id', { user_id })
+      .andWhere('bill.type = :type', { type })
+      .andWhere("to_char(bill.date, 'yyyy-MM') = :date", {
+        date: date.toString(),
+      })
+      .limit(page_size)
+      .offset((page - 1) * page_size);
+    if (tag_id) queryBuilder.andWhere('bill.tag_id = :tag_id', { tag_id });
+    if (orderBy === 'amount') {
+      queryBuilder.orderBy('bill.amount', 'DESC');
+    } else if (orderBy === 'date') {
+      queryBuilder.orderBy('bill.date', 'ASC');
+    }
+    const bills = await queryBuilder.printSql().getRawMany();
+    // 总额与总数
+    const totalQueryBuilder = this.billRepositity
+      .createQueryBuilder('bill')
+      .select('sum(bill.amount)', 'total_amount')
+      .addSelect('count(1)', 'total_bills')
+      .where('bill.user_id = :user_id', { user_id })
+      .andWhere('bill.type = :type', { type })
+      .andWhere("to_char(bill.date, 'yyyy-MM') = :date", {
+        date: date.toString(),
+      });
+    if (tag_id) {
+      totalQueryBuilder.andWhere('bill.tag_id = :tag_id', { tag_id });
+    }
+    const { total_amount, total_bills } = await totalQueryBuilder.getRawOne();
+
+    return {
+      total_amount,
+      total_page: Math.ceil(total_bills / page_size),
+      list: bills,
+    };
   }
 
   async findOne(id: string) {
@@ -151,6 +205,26 @@ export class BillService {
       .orderBy('total', 'DESC')
       .leftJoin(Tag, 'tag', 'tag.id = bill.tag_id');
     // 因为返回的不是实体类 Bill, 而是 raw results {tag_id, tag_name, total}, 因此要用getRawMany()
+    const result = queryBuilder.printSql().getRawMany();
+    return result;
+  }
+
+  dailyCompare(user: User, dailyCompareDto: MakeupDto) {
+    /**
+     * select to_char(date, 'YYYY-MM-DD') as date, sum(amount) as total from bill WHERE type = 1 and to_char(date, 'YYYY-MM') = '2022-11' GROUP BY to_char(date, 'YYYY-MM-DD')
+     */
+    const { id: user_id } = user;
+    const { date, type } = dailyCompareDto;
+    const queryBuilder = this.billRepositity
+      .createQueryBuilder('bill')
+      .select("to_char(bill.date, 'yyyy-MM-DD')", 'date')
+      .addSelect('sum(bill.amount)', 'total')
+      .where('bill.user_id = :user_id', { user_id })
+      .andWhere('bill.type = :type', { type })
+      .andWhere("to_char(bill.date, 'yyyy-MM') = :date", {
+        date: date.toString(),
+      })
+      .groupBy("to_char(bill.date, 'yyyy-MM-DD')");
     const result = queryBuilder.printSql().getRawMany();
     return result;
   }
