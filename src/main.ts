@@ -36,7 +36,7 @@ async function bootstrap() {
   // 生成 swagger 文档
   generateSwaggerDocument(app);
 
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
   Logger.msg(`Application is running on: ${await app.getUrl()}`);
   Logger.msg(`Swagger is running on: ${await app.getUrl()}/api`);
   Logger.msg(`Current NODE_ENV: ${process.env.NODE_ENV}`);
