@@ -29,3 +29,5 @@ lerna-debug.log*
 
 # IDE - VSCode
 .vscode/
+
+.config/prod.yml
